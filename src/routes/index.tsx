@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { ChevronLeft, ChevronRight, ExternalLink, MapPin, Phone } from "lucide-react";
+import { Check, ChevronLeft, ChevronRight, Copy, ExternalLink, MapPin, MessageCircle, Phone } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import logoAgarg from "@/assets/logo-agarc.png.asset.json";
 import heroImg from "@/assets/hero-comunidade.jpg";
@@ -31,6 +31,7 @@ export const Route = createFileRoute("/")({
 });
 
 const WHATSAPP = "https://wa.me/556296864957";
+const PIX_KEY = "04424386000110";
 const MAPS_URL =
   "https://www.google.com/maps/search/?api=1&query=Av.%20B%2C%20144%2C%20Sala%2018%2C%20Setor%20Oeste%2C%20Goi%C3%A2nia%20GO%2C%2074110-030";
 const MAPS_EMBED =
@@ -259,6 +260,25 @@ function HeroCarousel() {
 }
 
 function Index() {
+  const [pixCopied, setPixCopied] = useState(false);
+
+  const copyPix = async () => {
+    try {
+      await navigator.clipboard.writeText(PIX_KEY);
+    } catch {
+      const field = document.createElement("textarea");
+      field.value = PIX_KEY;
+      field.style.position = "fixed";
+      field.style.opacity = "0";
+      document.body.appendChild(field);
+      field.select();
+      document.execCommand("copy");
+      field.remove();
+    }
+    setPixCopied(true);
+    window.setTimeout(() => setPixCopied(false), 3000);
+  };
+
   return (
     <div className="min-h-screen bg-background">
       <header className="sticky top-0 z-50 border-b border-border bg-background/90 backdrop-blur">
@@ -286,7 +306,7 @@ function Index() {
 
       <HeroCarousel />
 
-      <section id="quem-somos" className="bg-surface">
+      <section id="quem-somos" className="bg-brand-blue-soft">
         <div className="mx-auto grid max-w-6xl items-center gap-10 px-6 py-20 lg:grid-cols-2">
           <div>
             <p className="text-xs font-extrabold tracking-[0.12em] text-primary uppercase">Nossa missão</p>
@@ -309,7 +329,7 @@ function Index() {
               Descubra mais
             </a>
           </div>
-          <div className="rounded-3xl border border-border bg-card p-8 shadow-soft">
+          <div className="rounded-3xl border-t-4 border-brand-blue bg-card p-8 shadow-soft">
             <h3 className="text-2xl font-bold">Criando caminhos para um futuro melhor</h3>
             <p className="mt-3 text-muted-foreground">
               Nossos cursos e ações sociais abrem portas. Inscreva-se, contribua ou saiba como fazer
@@ -347,7 +367,7 @@ function Index() {
               key={area.titulo}
               className="rounded-2xl border border-border bg-card p-7 transition-all hover:-translate-y-1 hover:shadow-soft"
             >
-              <span className="grid size-12 place-items-center rounded-xl bg-primary/12 font-display text-lg font-bold text-primary">
+              <span className={`grid size-12 place-items-center rounded-xl font-display text-lg font-bold ${i % 2 === 0 ? "bg-primary/12 text-primary" : "bg-brand-blue-soft text-brand-blue"}`}>
                 {String(i + 1).padStart(2, "0")}
               </span>
               <h3 className="mt-4 text-xl font-bold">{area.titulo}</h3>
@@ -370,7 +390,7 @@ function Index() {
           <div className="mt-12 grid gap-6 md:grid-cols-2">
             {programas.map((p) => (
               <article key={p.nome} className="rounded-2xl border border-border bg-card p-7 shadow-soft">
-                <h3 className="text-xl font-bold text-primary-deep">{p.nome}</h3>
+                <h3 className="text-xl font-bold text-brand-blue">{p.nome}</h3>
                 <p className="mt-3 text-muted-foreground">{p.texto}</p>
               </article>
             ))}
@@ -454,7 +474,22 @@ function Index() {
                 <p className="mt-3 text-lg font-bold">Banco do Brasil</p>
                 <p className="mt-1 text-muted-foreground">Agência 3656-0 · Conta Corrente 50559-5</p>
                 <p className="mt-4 text-sm font-semibold text-muted-foreground">PIX — CNPJ</p>
-                <p className="mt-1 font-display text-xl font-bold text-primary-deep">04.424.386/0001-10</p>
+                <div className="mt-2 flex flex-wrap items-center gap-3">
+                  <p className="font-display text-xl font-bold text-primary-deep">{PIX_KEY}</p>
+                  <Button
+                    type="button"
+                    variant={pixCopied ? "default" : "outline"}
+                    className={pixCopied ? "bg-brand-blue text-brand-blue-foreground hover:bg-brand-blue/90" : "border-brand-blue text-brand-blue hover:bg-brand-blue-soft hover:text-brand-blue"}
+                    onClick={copyPix}
+                    aria-live="polite"
+                  >
+                    {pixCopied ? <Check aria-hidden="true" /> : <Copy aria-hidden="true" />}
+                    {pixCopied ? "PIX copiado" : "Copiar PIX"}
+                  </Button>
+                </div>
+                <p className="mt-2 min-h-5 text-sm font-semibold text-brand-blue" role="status" aria-live="polite">
+                  {pixCopied ? "Chave copiada. Agora é só colar no aplicativo do seu banco." : ""}
+                </p>
               </div>
               <a
                 href={WHATSAPP}
@@ -475,7 +510,7 @@ function Index() {
         </div>
       </section>
 
-      <section id="localizacao" className="bg-background">
+      <section id="localizacao" className="bg-brand-blue-soft">
         <div className="mx-auto grid max-w-6xl gap-10 px-6 py-20 lg:grid-cols-[0.82fr_1.18fr] lg:items-center">
           <div>
             <p className="text-xs font-extrabold uppercase tracking-[0.12em] text-primary">Onde estamos</p>
@@ -565,6 +600,17 @@ function Index() {
           </p>
         </div>
       </footer>
+
+      <a
+        href={WHATSAPP}
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label="Conversar com a AGARC pelo WhatsApp Business"
+        className="group fixed bottom-5 right-5 z-50 flex h-14 items-center gap-2 rounded-full bg-primary px-4 text-primary-foreground shadow-lift transition-transform hover:-translate-y-1 hover:bg-primary-deep focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ring sm:bottom-7 sm:right-7"
+      >
+        <MessageCircle className="size-6" aria-hidden="true" />
+        <span className="hidden text-sm font-bold sm:block">WhatsApp</span>
+      </a>
     </div>
   );
 }
