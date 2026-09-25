@@ -142,16 +142,129 @@ const depoimentos = [
   },
 ];
 
+function HeroCarousel() {
+  const [current, setCurrent] = useState(0);
+  const [paused, setPaused] = useState(false);
+
+  useEffect(() => {
+    if (paused) return;
+    const timer = window.setInterval(() => {
+      setCurrent((index) => (index + 1) % slides.length);
+    }, 6500);
+    return () => window.clearInterval(timer);
+  }, [paused]);
+
+  const selectSlide = (index: number) => {
+    setCurrent((index + slides.length) % slides.length);
+  };
+
+  return (
+    <section
+      id="topo"
+      className="relative min-h-[600px] overflow-hidden bg-primary-deep text-primary-foreground sm:min-h-[660px]"
+      aria-roledescription="carrossel"
+      aria-label="Destaques da AGARC"
+      onMouseEnter={() => setPaused(true)}
+      onMouseLeave={() => setPaused(false)}
+      onFocusCapture={() => setPaused(true)}
+      onBlurCapture={() => setPaused(false)}
+    >
+      {slides.map((slide, index) => (
+        <div
+          key={slide.title}
+          className={`absolute inset-0 transition-opacity duration-700 motion-reduce:transition-none ${index === current ? "opacity-100" : "pointer-events-none opacity-0"}`}
+          aria-hidden={index !== current}
+        >
+          <img
+            src={slide.image}
+            width={1600}
+            height={912}
+            alt={slide.alt}
+            loading={index === 0 ? "eager" : "lazy"}
+            className="size-full object-cover object-center"
+          />
+          <div className="absolute inset-0 bg-hero-overlay" />
+        </div>
+      ))}
+
+      <div className="relative z-10 mx-auto flex min-h-[600px] max-w-6xl items-center px-6 py-20 sm:min-h-[660px]">
+        <div className="max-w-3xl">
+          <p className="text-sm font-extrabold uppercase tracking-[0.12em] text-accent">
+            {slides[current].eyebrow}
+          </p>
+          <h1 className="mt-5 text-4xl font-bold leading-[1.06] text-balance sm:text-6xl lg:text-7xl">
+            {slides[current].title}
+          </h1>
+          <p className="mt-6 max-w-2xl text-lg leading-relaxed text-primary-foreground/88 sm:text-xl">
+            {slides[current].text}
+          </p>
+          <div className="mt-9 flex flex-wrap gap-3">
+            <Button asChild size="lg" className="h-12 bg-accent px-6 font-bold text-accent-foreground hover:bg-accent/90">
+              <a href="#programas">Conheça os programas</a>
+            </Button>
+            <Button
+              asChild
+              size="lg"
+              variant="outline"
+              className="h-12 border-primary-foreground/70 bg-transparent px-6 font-bold text-primary-foreground hover:bg-primary-foreground/10 hover:text-primary-foreground"
+            >
+              <a href="#doar">Faça uma doação</a>
+            </Button>
+          </div>
+        </div>
+      </div>
+
+      <div className="absolute inset-x-0 bottom-7 z-20 mx-auto flex max-w-6xl items-center justify-between px-6">
+        <div className="flex gap-2" aria-label="Escolher destaque">
+          {slides.map((slide, index) => (
+            <Button
+              key={slide.title}
+              type="button"
+              variant="ghost"
+              size="icon"
+              className="size-8 rounded-full text-primary-foreground hover:bg-primary-foreground/10 hover:text-primary-foreground"
+              onClick={() => selectSlide(index)}
+              aria-label={`Mostrar destaque ${index + 1}`}
+              aria-current={index === current ? "true" : undefined}
+            >
+              <span className={`block size-2.5 rounded-full border border-primary-foreground ${index === current ? "bg-accent border-accent" : "bg-primary-foreground/45"}`} />
+            </Button>
+          ))}
+        </div>
+        <div className="flex gap-2">
+          <Button
+            type="button"
+            variant="outline"
+            size="icon"
+            className="size-10 rounded-full border-primary-foreground/60 bg-primary-deep/35 text-primary-foreground hover:bg-primary-foreground/15 hover:text-primary-foreground"
+            onClick={() => selectSlide(current - 1)}
+            aria-label="Destaque anterior"
+          >
+            <ChevronLeft />
+          </Button>
+          <Button
+            type="button"
+            variant="outline"
+            size="icon"
+            className="size-10 rounded-full border-primary-foreground/60 bg-primary-deep/35 text-primary-foreground hover:bg-primary-foreground/15 hover:text-primary-foreground"
+            onClick={() => selectSlide(current + 1)}
+            aria-label="Próximo destaque"
+          >
+            <ChevronRight />
+          </Button>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 function Index() {
   return (
     <div className="min-h-screen bg-background">
       <header className="sticky top-0 z-50 border-b border-border bg-background/90 backdrop-blur">
         <div className="mx-auto flex h-18 max-w-6xl items-center justify-between gap-4 px-6 py-4">
-          <a href="#topo" className="flex items-center gap-2.5">
-            <span className="gradient-hero grid size-9 place-items-center rounded-xl font-display text-lg font-bold text-primary-foreground">
-              A
-            </span>
-            <span className="font-display text-xl font-bold tracking-tight">AGARC</span>
+          <a href="#topo" className="shrink-0" aria-label="AGARC — página inicial">
+            <img src={logoAgarg.url} width={443} height={106} alt="AGARC — Associação Goiana de Atualização e Realização do Cidadão" className="h-12 w-auto max-w-[250px] object-contain sm:h-14 sm:max-w-[300px]" />
           </a>
           <nav className="hidden items-center gap-7 text-sm font-semibold text-muted-foreground md:flex">
             <a href="#quem-somos" className="transition-colors hover:text-primary">
@@ -167,55 +280,11 @@ function Index() {
               Contato
             </a>
           </nav>
-          <a
-            href="#doar"
-            className="rounded-xl bg-primary px-5 py-2.5 text-sm font-bold text-primary-foreground shadow-soft transition-colors hover:bg-primary-deep"
-          >
-            Doe aqui
-          </a>
+          <Button asChild className="h-10 shrink-0 px-5 font-bold"><a href="#doar">Doe aqui</a></Button>
         </div>
       </header>
 
-      <section id="topo" className="gradient-hero relative overflow-hidden text-primary-foreground">
-        <div className="absolute -top-24 -right-24 size-96 rounded-full bg-accent/20" aria-hidden="true" />
-        <div className="relative mx-auto grid max-w-6xl items-center gap-12 px-6 py-20 lg:grid-cols-12 lg:py-28">
-          <div className="lg:col-span-7">
-            <span className="inline-block rounded-full bg-primary-foreground/15 px-4 py-1.5 text-sm font-bold">
-              Goiânia · desde 2001
-            </span>
-            <h1 className="mt-6 text-4xl leading-[1.05] font-bold text-balance sm:text-6xl">
-              Há mais de 24 anos contribuindo para uma sociedade melhor
-            </h1>
-            <p className="mt-6 max-w-xl text-lg text-primary-foreground/85">
-              Promovemos assistência social, incentivamos o voluntariado e desenvolvemos ações de
-              valorização humana e capacitação profissional do cidadão.
-            </p>
-            <div className="mt-9 flex flex-wrap gap-3">
-              <a
-                href="#programas"
-                className="rounded-xl bg-accent px-6 py-3 font-bold text-accent-foreground shadow-soft transition-transform hover:-translate-y-0.5"
-              >
-                Conheça os programas
-              </a>
-              <a
-                href="#doar"
-                className="rounded-xl border-2 border-primary-foreground/60 px-6 py-3 font-bold transition-colors hover:bg-primary-foreground/10"
-              >
-                Doe aqui
-              </a>
-            </div>
-          </div>
-          <div className="lg:col-span-5">
-            <img
-              src={heroImg}
-              width={1280}
-              height={1440}
-              alt="Participantes de um curso de capacitação profissional da AGARC em Goiânia"
-              className="aspect-4/5 w-full rounded-3xl object-cover shadow-lift"
-            />
-          </div>
-        </div>
-      </section>
+      <HeroCarousel />
 
       <section id="quem-somos" className="bg-surface">
         <div className="mx-auto grid max-w-6xl items-center gap-10 px-6 py-20 lg:grid-cols-2">
@@ -380,6 +449,13 @@ function Index() {
               acolhem, capacitam e resgatam a dignidade de quem mais precisa.
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
+              <div className="w-full border-l-4 border-accent bg-card p-5 shadow-soft">
+                <p className="text-sm font-extrabold uppercase tracking-[0.12em] text-primary">Dados bancários</p>
+                <p className="mt-3 text-lg font-bold">Banco do Brasil</p>
+                <p className="mt-1 text-muted-foreground">Agência 3656-0 · Conta Corrente 50559-5</p>
+                <p className="mt-4 text-sm font-semibold text-muted-foreground">PIX — CNPJ</p>
+                <p className="mt-1 font-display text-xl font-bold text-primary-deep">04.424.386/0001-10</p>
+              </div>
               <a
                 href={WHATSAPP}
                 target="_blank"
@@ -399,15 +475,44 @@ function Index() {
         </div>
       </section>
 
+      <section id="localizacao" className="bg-background">
+        <div className="mx-auto grid max-w-6xl gap-10 px-6 py-20 lg:grid-cols-[0.82fr_1.18fr] lg:items-center">
+          <div>
+            <p className="text-xs font-extrabold uppercase tracking-[0.12em] text-primary">Onde estamos</p>
+            <h2 className="mt-3 text-3xl font-bold text-balance sm:text-4xl">Venha conhecer a AGARC</h2>
+            <div className="mt-7 space-y-5 text-muted-foreground">
+              <div className="flex items-start gap-3">
+                <MapPin className="mt-0.5 size-5 shrink-0 text-primary" aria-hidden="true" />
+                <p>Av. B, nº 144, Sala 18<br />Setor Oeste, Goiânia–GO<br />CEP 74.110-030</p>
+              </div>
+              <div className="flex items-center gap-3">
+                <Phone className="size-5 shrink-0 text-primary" aria-hidden="true" />
+                <a href="tel:+556232911032" className="font-semibold text-foreground hover:text-primary">(62) 3291-1032</a>
+              </div>
+            </div>
+            <Button asChild className="mt-8 h-11 px-5 font-bold">
+              <a href={MAPS_URL} target="_blank" rel="noopener noreferrer">Abrir no Google Maps <ExternalLink /></a>
+            </Button>
+          </div>
+          <div className="overflow-hidden rounded-lg border border-border shadow-soft">
+            <iframe
+              title="Mapa da sede da AGARC em Goiânia"
+              src={MAPS_EMBED}
+              className="h-[420px] w-full"
+              loading="lazy"
+              referrerPolicy="no-referrer-when-downgrade"
+              allowFullScreen
+            />
+          </div>
+        </div>
+      </section>
+
       <footer id="contato" className="bg-primary-deep text-primary-foreground">
         <div className="mx-auto max-w-6xl px-6 py-16">
           <div className="grid gap-10 md:grid-cols-3">
             <div>
-              <div className="flex items-center gap-2.5">
-                <span className="grid size-9 place-items-center rounded-xl bg-accent font-display text-lg font-bold text-accent-foreground">
-                  A
-                </span>
-                <span className="font-display text-xl font-bold">AGARC</span>
+              <div className="inline-block rounded-md bg-card p-2">
+                <img src={logoAgarg.url} width={443} height={106} alt="AGARC" className="h-12 w-auto max-w-[270px] object-contain" loading="lazy" />
               </div>
               <p className="mt-4 max-w-xs text-primary-foreground/70">
                 Associação Goiana de Atualização e Realização do Cidadão. Assistência social e
@@ -418,18 +523,14 @@ function Index() {
               <h3 className="text-base font-bold">Contato</h3>
               <ul className="mt-4 space-y-2 text-primary-foreground/75">
                 <li>
-                  Avenida B, n. 144, Sala 18 — Setor Oeste
+                  Avenida B, nº 144, Sala 18 — Setor Oeste
                   <br />
-                  Goiânia-GO, CEP 74.110-130
+                  Goiânia-GO, CEP 74.110-030
                 </li>
                 <li>
                   <a href="tel:+556232911032" className="hover:text-primary-foreground">
                     (62) 3291-1032
                   </a>{" "}
-                  ·{" "}
-                  <a href="tel:+5562999782925" className="hover:text-primary-foreground">
-                    (62) 99978-2925
-                  </a>
                 </li>
                 <li>
                   <a href="mailto:agarctrabalho@gmail.com" className="hover:text-primary-foreground">
