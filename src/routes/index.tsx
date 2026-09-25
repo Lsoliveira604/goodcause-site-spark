@@ -1,5 +1,11 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { useEffect, useState } from "react";
+import { ChevronLeft, ChevronRight, ExternalLink, MapPin, Phone } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import logoAgarg from "@/assets/logo-agarc.png.asset.json";
 import heroImg from "@/assets/hero-comunidade.jpg";
+import capacitacaoImg from "@/assets/carrossel-capacitacao.jpg";
+import comunidadeImg from "@/assets/carrossel-comunidade.jpg";
 import doacaoImg from "@/assets/doacao.jpg";
 
 export const Route = createFileRoute("/")({
@@ -17,12 +23,42 @@ export const Route = createFileRoute("/")({
         content:
           "Desde 2001 promovendo assistência social, incentivando o voluntariado e desenvolvendo ações de valorização humana.",
       },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: Index,
 });
 
-const WHATSAPP = "https://wa.me/5562999782925";
+const WHATSAPP = "https://wa.me/556296864957";
+const MAPS_URL =
+  "https://www.google.com/maps/search/?api=1&query=Av.%20B%2C%20144%2C%20Sala%2018%2C%20Setor%20Oeste%2C%20Goi%C3%A2nia%20GO%2C%2074110-030";
+const MAPS_EMBED =
+  "https://www.google.com/maps?q=Av.%20B%2C%20144%2C%20Sala%2018%2C%20Setor%20Oeste%2C%20Goi%C3%A2nia%20GO%2C%2074110-030&z=16&output=embed";
+
+const slides = [
+  {
+    image: heroImg,
+    eyebrow: "Goiânia · desde 2001",
+    title: "Há mais de 24 anos transformando vidas",
+    text: "Promovemos assistência social, voluntariado e ações de valorização humana para construir uma sociedade mais justa.",
+    alt: "Participantes de uma ação de capacitação profissional da AGARC",
+  },
+  {
+    image: capacitacaoImg,
+    eyebrow: "Capacitação profissional",
+    title: "Conhecimento que abre novos caminhos",
+    text: "Cursos e projetos que fortalecem a autonomia, ampliam oportunidades e ajudam a gerar trabalho e renda.",
+    alt: "Jovens participando de uma oficina de capacitação profissional",
+  },
+  {
+    image: comunidadeImg,
+    eyebrow: "Assistência e cidadania",
+    title: "Uma rede de cuidado perto de quem precisa",
+    text: "Acolhemos famílias e mobilizamos a comunidade em ações que promovem dignidade, inclusão e esperança.",
+    alt: "Voluntários e famílias reunidos em uma ação comunitária",
+  },
+];
 
 const areas = [
   { titulo: "Assistência Social", texto: "Acolhimento e acompanhamento de famílias em situação de vulnerabilidade." },
