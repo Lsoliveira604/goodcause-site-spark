@@ -159,6 +159,9 @@ function HeroCarousel() {
     setCurrent((index + slides.length) % slides.length);
   };
 
+  const activeSlide = slides[current];
+  if (!activeSlide) return null;
+
   return (
     <section
       id="topo"
@@ -191,13 +194,13 @@ function HeroCarousel() {
       <div className="relative z-10 mx-auto flex min-h-[600px] max-w-6xl items-center px-6 py-20 sm:min-h-[660px]">
         <div className="max-w-3xl">
           <p className="text-sm font-extrabold uppercase tracking-[0.12em] text-accent">
-            {slides[current].eyebrow}
+            {activeSlide.eyebrow}
           </p>
           <h1 className="mt-5 text-4xl font-bold leading-[1.06] text-balance sm:text-6xl lg:text-7xl">
-            {slides[current].title}
+            {activeSlide.title}
           </h1>
           <p className="mt-6 max-w-2xl text-lg leading-relaxed text-primary-foreground/88 sm:text-xl">
-            {slides[current].text}
+            {activeSlide.text}
           </p>
           <div className="mt-9 flex flex-wrap gap-3">
             <Button asChild size="lg" className="h-12 bg-accent px-6 font-bold text-accent-foreground hover:bg-accent/90">
