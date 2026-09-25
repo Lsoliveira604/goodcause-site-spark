@@ -66,6 +66,26 @@
   background-image: linear-gradient(135deg, var(--primary-deep), var(--primary));
 }
 
+@utility bg-hero-overlay {
+  background-image: linear-gradient(
+    90deg,
+    oklch(0.18 0.045 165 / 0.96) 0%,
+    oklch(0.18 0.045 165 / 0.82) 42%,
+    oklch(0.18 0.045 165 / 0.3) 72%,
+    oklch(0.18 0.045 165 / 0.16) 100%
+  );
+}
+
+@media (max-width: 640px) {
+  .bg-hero-overlay {
+    background-image: linear-gradient(
+      90deg,
+      oklch(0.18 0.045 165 / 0.92),
+      oklch(0.18 0.045 165 / 0.65)
+    );
+  }
+}
+
 
 :root {
   --radius: 0.875rem;
@@ -101,6 +121,10 @@
 }
 
 @layer base {
+  html {
+    scroll-padding-top: 5.5rem;
+  }
+
   * {
     border-color: var(--color-border);
   }
@@ -116,7 +140,7 @@
   h2,
   h3 {
     font-family: var(--font-display);
-    letter-spacing: -0.02em;
+    letter-spacing: 0;
   }
 }
 
